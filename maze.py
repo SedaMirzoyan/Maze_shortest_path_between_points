@@ -2,6 +2,8 @@ import random
 
 
 def get_size(n):
+    if(n % 2 == 0):
+        n -= 1
     board_length = (n * 2) + 1
     return board_length 
 
@@ -28,7 +30,7 @@ def generate_maze(board_length):
     visited.append(start_coords)
     #random_index = random.randint(0, 3)
     #dir = self.directions[random_index]
-    current_coords = [1, 1]
+    current_coords = start_coords
 
     #while((stack) and len(visited) > n * n):
     while(stack):
@@ -40,9 +42,10 @@ def generate_maze(board_length):
         print("is_valid_direction ", is_valid_direction)
         if(is_valid_direction):
             #start_coords = stack.pop()
-            current_coords[0] = start_coords[0] + dir[0] 
-            current_coords[1] = start_coords[1] + dir[1] 
-            print("current_coords ", current_coords)
+            x = start_coords[0] + dir[0] 
+            y = start_coords[1] + dir[1] 
+            current_coords = [x, y]
+            #print("current_coords ", current_coords)
             if current_coords not in visited:
                 visited.append(current_coords)
                 stack.append(current_coords)
@@ -80,8 +83,8 @@ def main():
  
     n = 4
     board_length = get_size(n)
-    #generate_maze(board_length)
-    print_board(board_length)
+    generate_maze(board_length)
+    #print_board(board_length)
     
 
 
