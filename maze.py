@@ -33,14 +33,15 @@ class Maze:
     '''
 
     def is_valid(self, start_coords, dir):
-        if ((start_coords[0] + dir[0] < 0) or (start_coords[0] + dir[0] > board_length)):
+        if ((start_coords[0] + dir[0] < 0) or (start_coords[0] + dir[0] > board_length) 
+            or (start_coords[1] + dir[1] < 0) or (start_coords[1] + dir[1] > board_length)):
             return False
         
         return True
 
 
 
-    def generate_maze(self):
+    def generate_maze(self, n):
         maze = [[1 for _ in range(board_length)] for _ in range(board_length)]
         #print(maze)
         visited = []
@@ -53,15 +54,25 @@ class Maze:
         current_coords = [1, 1]
 
 
+        #while((stack) and len(visited) > n * n):
         while(stack):
             random_index = random.randint(0, 3)
             dir = self.directions[random_index]
-            is_valid_direction = self.is_valid(self, start_coords, dir)
+            is_valid_direction = self.is_valid(start_coords, dir)
+            print("is_valid_direction ", is_valid_direction)
             if(is_valid_direction):
                 current_coords[0] = start_coords[0] + dir[0] 
                 current_coords[1] = start_coords[1] + dir[1] 
+                print("current_coords ", start_coords)
                 if current_coords not in visited:
-                    pass
+                    visited.append(current_coords)
+                else:
+                    stack.pop()
+                start_coords = current_coords
+                print("start_coords ", start_coords)
+            print("len visited ", len(visited))
+
+                    
 
         return maze
     
@@ -84,11 +95,11 @@ class Maze:
 
 def main():
  
-
+    n = 4
     ob = Maze()
     #ob.print_board()
-    ob.generate_maze()
-    ob.print_board()
+    ob.generate_maze(n)
+    #ob.print_board()
     
 
 
