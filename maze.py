@@ -2,15 +2,14 @@ import random
 
 
 def get_size(n):
-    if(n % 2 == 0):
-        n -= 1
     board_length = (n * 2) + 1
     return board_length 
 
  
 def is_valid_coords(start_coords, dir, board_length):
-    if ((start_coords[0] + dir[0] < 0) or (start_coords[0] + dir[0] > board_length) 
-        or (start_coords[1] + dir[1] < 0) or (start_coords[1] + dir[1] > board_length)):
+    if ((start_coords[0] + dir[0] < 0) or (start_coords[0] + dir[0] >= board_length) 
+        or (start_coords[1] + dir[1] < 0) or (start_coords[1] + dir[1] >= board_length)):
+        print("Out of range")
         return False
         
     return True
@@ -19,7 +18,6 @@ def is_valid_coords(start_coords, dir, board_length):
 def generate_maze(board_length):
     directions = [[0, 2], [2, 0], [0, -2], [-2, 0]]
     maze = [[1 for _ in range(board_length)] for _ in range(board_length)]
-    #print(maze)
     stack = []
     visited = []
 
@@ -42,14 +40,14 @@ def generate_maze(board_length):
         print("is_valid_direction ", is_valid_direction)
         if(is_valid_direction):
             #start_coords = stack.pop()
-            x = start_coords[0] + dir[0] 
-            y = start_coords[1] + dir[1] 
-            current_coords = [x, y]
+            px = start_coords[0] + dir[0] 
+            py = start_coords[1] + dir[1] 
+            current_coords = [px, py]
             #print("current_coords ", current_coords)
             if current_coords not in visited:
                 visited.append(current_coords)
                 stack.append(current_coords)
-                maze[current_coords[0]][current_coords[1]] = 0
+                maze[px][py] = 0
                 start_coords = current_coords
             else:
                 #start_coords = stack.pop()
@@ -84,7 +82,7 @@ def main():
     n = 4
     board_length = get_size(n)
     generate_maze(board_length)
-    #print_board(board_length)
+    print_board(board_length)
     
 
 
