@@ -5,15 +5,6 @@ def get_size(n):
     board_length = (n * 2) + 1
     return board_length 
 
-'''
-def is_valid_coords(start_coords, dir, board_length):
-    if ((start_coords[0] + dir[0] <= 0) or (start_coords[0] + dir[0] >= board_length) 
-        or (start_coords[1] + dir[1] <= 0) or (start_coords[1] + dir[1] >= board_length)):
-        print("Out of range")
-        return False
-        
-    return True
-'''
 
 def is_valid_coords(current_coords, board_length):
     if ((current_coords[0] <= 0) or (current_coords[0] >= board_length) 
@@ -26,7 +17,6 @@ def is_valid_coords(current_coords, board_length):
 
 def generate_maze(board_length):
     point_directions = [[0, 2], [2, 0], [0, -2], [-2, 0]]
-    #wall_directions = [[0, 1], [1, 0], [0, -1], [-1, 0]]
     maze = [[1 for _ in range(board_length)] for _ in range(board_length)]
     stack = []
     visited = []
@@ -34,23 +24,19 @@ def generate_maze(board_length):
     start_coords = [1, 1]
     maze[start_coords[1]][start_coords[0]] = 0
     stack.append(start_coords)
-    print("stackhhhhhhhhhhhh ", stack)
     visited.append(start_coords)
     current_coords = start_coords
 
     while(stack):
         start_coords = stack[-1]
-        #random_index = random.choice(point_directions)
-        #print("random_index ", random_index)
         flag = False        
 
         for _ in range(len(point_directions)):
-            random_index = random.choice(point_directions)
-
-            point_x = start_coords[0] + random_index[0] 
-            point_y = start_coords[1] + random_index[1] 
-            wall_x = start_coords[0] + int(random_index[0]/2)
-            wall_y = start_coords[1] + int(random_index[1]/2)
+            random_pos = random.choice(point_directions)
+            point_x = start_coords[0] + random_pos[0] 
+            point_y = start_coords[1] + random_pos[1] 
+            wall_x = start_coords[0] + int(random_pos[0]/2)
+            wall_y = start_coords[1] + int(random_pos[1]/2)
             current_coords = [point_x, point_y] 
             wall_coords = [wall_x, wall_y]
 
@@ -74,39 +60,15 @@ def generate_maze(board_length):
             
         print("visited ", visited)
         print("stack ", stack)
-    
-                    
-
+        
     return maze
     
 
-'''
-def print_board(board_length):
-    maze = generate_maze(board_length)
-    for i in range(board_length):
-        for j in range(board_length):
-            print(maze[i][j], end = " ")
-        print("\n")
 
-
-
-def print_board(board_length, n):
-    maze = generate_maze(board_length, n)
-    for row in maze:
-        for col in row:
-            if(col == 1):
-                print("#")
-            else:
-                print(" ")
-
-'''
-
-def print_board(board_length):       #working
-    # Print the maze grid to console
+def print_maze(board_length):       
     maze = generate_maze(board_length)
     for row in maze:
         print("".join('#' if cell else ' ' for cell in row))
-
 
 
 
@@ -121,7 +83,7 @@ def main():
     n = 4
     board_length = get_size(n)
     generate_maze(board_length)
-    print_board(board_length)
+    print_maze(board_length)
     
 
 
