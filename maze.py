@@ -1,5 +1,16 @@
 import random
 
+class bcolors:
+    HEADER = '\033[95m'
+    OKBLUE = '\033[94m'
+    OKCYAN = '\033[96m'
+    OKGREEN = '\033[92m'
+    WARNING = '\033[93m'
+    FAIL = '\033[91m'
+    ENDC = '\033[0m'
+    BOLD = '\033[1m'
+    UNDERLINE = '\033[4m'
+
 
 def get_size(n):
     board_length = (n * 2) + 1
@@ -60,30 +71,44 @@ def generate_maze(board_length):
             
         print("visited ", visited)
         print("stack ", stack)
+
+    set_letters(maze, board_length)
         
     return maze
+
+
+def set_letters(maze, board_length):
+    coords = []
+    for i in range(board_length):
+        for j in range(board_length):
+            if(maze[i][j] == 0):
+                coords.append((i, j))
+        
+    random_coord = random.sample(coords, 2)
+    #a, b = random_coord[0], random_coord[1]
+    ax, ay = random_coord[0][0], random_coord[0][1]
+    bx, by = random_coord[1][0], random_coord[1][1]
+    print("rc ", random_coord, "ax ", ax, "ay ", ay, "bx ", bx, "by ", by)
+    maze[ay][ax] = 2
+    maze[by][bx] = 3
     
-
-
-def print_maze(board_length):       
-    maze = generate_maze(board_length)
-    for row in maze:
-        print("".join('#' if cell else ' ' for cell in row))
-
-
-
 
 def find_shortest_path():
     pass
 
-    
+
+def print_maze(maze):       
+    for row in maze:
+        print("".join('#' if cell == 1 else 'S' if cell == 2 else 'E' if cell == 3 else ' ' for cell in row))
+
+
 
 def main():
- 
     n = 4
+    #n = int(input("Enter size of the grid"))
     board_length = get_size(n)
-    generate_maze(board_length)
-    print_maze(board_length)
+    maze = generate_maze(board_length)
+    print_maze(maze)
     
 
 
