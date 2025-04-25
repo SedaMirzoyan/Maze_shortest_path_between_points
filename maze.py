@@ -1,4 +1,5 @@
 import random
+import queue 
 
 class bcolors:
     HEADER = '\033[95m'
@@ -52,7 +53,6 @@ def generate_maze(board_length):
             wall_coords = [wall_x, wall_y]
 
             is_valid_dir_point = is_valid_coords(current_coords, board_length)
-            print("is_valid_direction ", is_valid_dir_point, current_coords)
             if(is_valid_dir_point and current_coords not in visited): 
                 maze[point_y][point_x] = 0
                 maze[wall_y][wall_x] = 0
@@ -60,21 +60,14 @@ def generate_maze(board_length):
                 visited.append(current_coords)
                 stack.append(current_coords)
                 flag = True
-                print("visited ", visited)
-                print("stack ", stack)
                 break
-
-            print(" current_coords ", current_coords, "wall_coords ", wall_coords)
 
         if(flag == False):
             stack.pop()
             
-        print("visited ", visited)
-        print("stack ", stack)
-
-    set_letters(maze, board_length)
+    coord = set_letters(maze, board_length)
         
-    return maze
+    return (maze, coord)
 
 
 def set_letters(maze, board_length):
@@ -85,21 +78,106 @@ def set_letters(maze, board_length):
                 coords.append((i, j))
         
     random_coord = random.sample(coords, 2)
-    #a, b = random_coord[0], random_coord[1]
-    ax, ay = random_coord[0][0], random_coord[0][1]
-    bx, by = random_coord[1][0], random_coord[1][1]
-    print("rc ", random_coord, "ax ", ax, "ay ", ay, "bx ", bx, "by ", by)
-    maze[ay][ax] = 2
-    maze[by][bx] = 3
+    start_x, start_y = random_coord[0][0], random_coord[0][1]
+    end_x, end_y = random_coord[1][0], random_coord[1][1]
+    print("rc ", random_coord)
+    maze[start_y][start_x] = 2
+    #maze[start_y][start_x] = 'S'
+    maze[end_y][end_x] = 3
+    #maze[end_y][end_x] = 'E'
+
+    return random_coord
+
+
+    
+def is_valid_move(maze_and_coords, moves, board_length):
+    maze, coords = maze_and_coords
+    start_y = coords[0][0]
+    start_x = coords[0][1]
+
+    for move in moves.split():
+        if move == "Left":
+            start_x = start_x - 1
+        elif move == "Right":
+            start_x = start_x + 1
+        elif move == "Up":
+            start_y = start_y - 1
+        elif move == "Down":
+            start_y = start_y + 1
+
+    if  is_valid_coords([start_y, start_x], board_length)==False:
+        return False
+    print("start_y",start_y)
+    print("start_x",start_x)
+    print(maze[start_x][start_y])
+    if maze[start_y][start_x] == 1:
+        return False
+    
+    return True
+
+def is_endpoint(maze_and_coords, moves):
+    maze, coords = maze_and_coords
+    start_y = coords[0][0]
+    start_x = coords[0][1]
+
+    end = (coords[1][0],coords[1][1])
+    for move in moves.split():
+        
+        if move == "Left":
+            start_x = start_x - 1
+        elif move == "Right":
+            start_x = start_x + 1
+        elif move == "Up":
+            start_y = start_y - 1
+        elif move == "Down":
+            start_y = start_y + 1
+
+    if ((start_y, start_x)) == end:
+        return False
+    
+    return True
+
+
+def find_shortest_path(maze_and_coords, board_length):
+    maze, coords = maze_and_coords
+    
+    start_y, start_x = coords[0][0], coords[0][1]
+    end_y, end_x = coords[1][0], coords[1][1]
+    print(start_y, start_x)
+    print("~~~~~~",  maze)
+    print("maze[start_y][start_x] = ", maze[start_x][start_y])
+
+    q_moves = queue.Queue()
+    q_moves.put("")
+    direction = ""
+    
+    #counter = 0
+    while is_endpoint(maze_and_coords, direction):
+        direction = q_moves.get()
+        print("~!!!!!!!!", direction)
+        for prev_dir in ["Left", "Right", "Up", "Down"]:
+            current_dir = direction + " " + prev_dir
+            
+            if is_valid_move(maze_and_coords, current_dir, board_length):
+                q_moves.put(current_dir)
+
+        #counter += 1
+        #if counter >= 30:
+        #    break
+
     
 
-def find_shortest_path():
-    pass
 
 
-def print_maze(maze):       
+def print_maze(maze_and_coords):      
+    maze, coords = maze_and_coords
     for row in maze:
-        print("".join('#' if cell == 1 else 'S' if cell == 2 else 'E' if cell == 3 else ' ' for cell in row))
+        print("".join('#' if cell == 1 
+                      else 'S' if cell == 2 #'S' #2 
+                      else 'E' if cell == 3 #'E' #3 
+                      else  bcolors.FAIL + '.' + bcolors.ENDC if cell == 4 
+                      else  ' ' for cell in row))
+
 
 
 
@@ -108,7 +186,14 @@ def main():
     #n = int(input("Enter size of the grid"))
     board_length = get_size(n)
     maze = generate_maze(board_length)
+    path = find_shortest_path(maze, board_length)
     print_maze(maze)
+
+    if path:
+        print(f"\nPath length: {len(path)}")
+    else:
+        print("No path found.")
+
     
 
 
