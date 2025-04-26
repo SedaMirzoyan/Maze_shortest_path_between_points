@@ -9,7 +9,8 @@ class bcolors:
 
 
 def get_size(n):
-    board_length = (n * 2) + 1
+    #board_length = (n * 2) + 1
+    board_length = n
     return board_length 
 
 
@@ -49,7 +50,6 @@ def generate_maze(board_length):
             if(is_valid_dir_point and current_coords not in visited): 
                 maze[point_x][point_y] = 0
                 maze[wall_x][wall_y] = 0
-
                 visited.append(current_coords)
                 stack.append(current_coords)
                 flag = True
@@ -65,12 +65,17 @@ def generate_maze(board_length):
 
 def set_points(maze, board_length):
     coords = []
-    for i in range(board_length):
-        for j in range(board_length):
-            if(maze[i][j] == 0):
-                coords.append((i, j))
-        
+            
+    while(True):
+        for i in range(board_length):
+            for j in range(board_length):
+                if(maze[i][j] == 0):
+                    coords.append((i, j))
+        if len(coords) > 2:
+            break
+
     random_coords = random.sample(coords, 2)
+    
     start_x, start_y = random_coords[0][0], random_coords[0][1]
     end_x, end_y = random_coords[1][0], random_coords[1][1]
     print("rc ", random_coords)
@@ -129,15 +134,10 @@ def is_endpoint(maze_and_coords, moves):
 
 
 def find_shortest_path(maze_and_coords, board_length):
-    #maze, coords = maze_and_coords
-    #start_x, start_y = coords[0][0], coords[0][1]
-    #end_x, end_y = coords[1][0], coords[1][1]
-
     q_moves = queue.Queue()
     q_moves.put("")
     direction = ""
     
-    #counter = 0
     while not is_endpoint(maze_and_coords, direction):
         direction = q_moves.get()
         for prev_dir in ["L", "R", "U", "D"]:
@@ -185,8 +185,19 @@ def print_maze(maze_and_coords, path):
 
 
 def main():
-    n = 6
-    #n = int(input("Enter size of the grid"))
+    while True:
+        n = int(input("Enter odd number for the size of the grid: "))
+        try:
+            n = int(n)
+        except ValueError:
+            print("Please enter Valid number")
+            continue
+        if ((5 <= n <= 13) and (n % 2 == 1)):
+            break
+        else:
+            print("Please enter valid range: 5-13 and odd number")
+
+    
     board_length = get_size(n)
     maze = generate_maze(board_length)
     shortest_path = find_shortest_path(maze, board_length)
