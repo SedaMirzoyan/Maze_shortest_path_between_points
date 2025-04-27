@@ -85,7 +85,15 @@ def set_points(maze, board_length):
     return random_coords
 
 
+def is_oposite_direction(moves):
+    not_allowed_moves = [("U","D"),("D","U"),("L","R"),("R","L")]
+    for i in range(len(moves) - 1):
+        val = (moves[i], moves[i+1])
+        if val in not_allowed_moves:
+            return True
+    return False
     
+
 def is_valid_move(maze_and_coords, moves, board_length):
     maze, coords = maze_and_coords
     start_x = coords[0][0]
@@ -101,11 +109,13 @@ def is_valid_move(maze_and_coords, moves, board_length):
         elif move == "D":
             start_x = start_x + 1
 
-    if  is_valid_coords([start_x, start_y], board_length)==False:
+    if is_valid_coords([start_x, start_y], board_length)==False:
         return False
     if maze[start_x][start_y] == 1:
         return False
-    
+    if is_oposite_direction(moves):
+        return False
+
     return True
 
 
@@ -192,10 +202,10 @@ def main():
         except ValueError:
             print("Please enter Valid number")
             continue
-        if ((5 <= n <= 13) and (n % 2 == 1)):
+        if ((5 <= n <= 100) and (n % 2 == 1)):
             break
         else:
-            print("Please enter valid range: 5-13 and odd number")
+            print("Please enter valid range: 5-100 and odd number")
 
     
     board_length = get_size(n)
