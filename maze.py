@@ -202,7 +202,7 @@ def find_shortest_path(maze_and_coords, board_length):
 
         #iterating through all possible directions
         for dir in ["L", "R", "U", "D"]:
-            #adding new direction to the previouse directions
+            #adding new direction to the previous directions
             current_dir = prev_dir + dir
             
             #before adding to the queue, check if move is valid
