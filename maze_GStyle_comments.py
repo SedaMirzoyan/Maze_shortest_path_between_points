@@ -40,7 +40,7 @@ def generate_maze(board_length):
         board_length (int): board length
 
     Return:
-        (maze, coord) (tuple): tuple of maze (2D list) and list of coordinates of Start and End points
+        (maze, coord) (tuple): tuple of maze(2D list) and list of coordinates of Start and End points
     """
 
     """
@@ -73,23 +73,23 @@ def generate_maze(board_length):
         flag = False        
 
         for _ in range(len(point_directions)):
-            #iterate through "point_directions" list and randomly choose direction 
+            """iterate through "point_directions" list and randomly choose direction """
             random_pos = random.choice(point_directions)
 
-            #move start_coordinates corresponding to random direction
+            """move start_coordinates corresponding to random direction"""
             point_x = start_coords[0] + random_pos[0] 
             point_y = start_coords[1] + random_pos[1] 
 
-            #keeping wall coordinates between previous and current cell to then remove the wall
+            """keeping wall coordinates between previous and current cell to then remove the wall"""
             wall_x = start_coords[0] + int(random_pos[0]/2)
             wall_y = start_coords[1] + int(random_pos[1]/2)
             current_coords = [point_x, point_y] 
 
-            #check if new coordinates are not exiting board and they are not in visted list
+            """check if new coordinates are not exiting board and they are not in visted list"""
             is_valid_dir_point = is_valid_coords(current_coords, board_length)
             if(is_valid_dir_point and current_coords not in visited): 
 
-                #we set 0 (as empty place, path) in place of newly generated coordinates in maze 
+                """we set 0 (as empty place, path) in place of newly generated coordinates in maze """
                 maze[point_x][point_y] = 0
                 """
                 Remove wall and set blank space in place of wall coordinates
@@ -97,7 +97,7 @@ def generate_maze(board_length):
                 """
                 maze[wall_x][wall_y] = 0
 
-                #add valid coordinates in stack and in visited, set flag to True
+                """add valid coordinates in stack and in visited, set flag to True"""
                 visited.append(current_coords)
                 stack.append(current_coords)
 
@@ -108,11 +108,11 @@ def generate_maze(board_length):
                 flag = True
                 break
 
-        #backtrack if no valid coordinates
+        """backtrack if no valid coordinates"""
         if(flag == False):
             stack.pop()
             
-    #setting start end end points in random places
+    """setting start end end points in random places"""
     coord = set_points(maze, board_length)
     return (maze, coord)
 
@@ -132,7 +132,7 @@ def set_points(maze, board_length):
     """
     coords = []
     
-    #making sure that maze has at least two valid paths before placing start and end coordinates
+    """making sure that maze has at least two valid paths before placing start and end coordinates"""
     while(True):
         for i in range(board_length):
             for j in range(board_length):
@@ -143,12 +143,12 @@ def set_points(maze, board_length):
 
     random_coords = random.sample(coords, 2)
     
-    #assigning random coordinates first elements to start point and random coordinates second elements to end point
+    """assigning random coordinates first elements to start point and random coordinates second elements to end point"""
     start_x, start_y = random_coords[0][0], random_coords[0][1]
     end_x, end_y = random_coords[1][0], random_coords[1][1]
     print("random coordinates ", random_coords)
 
-    #since maze contains 0s and 1s we assign 2 for 'S'(Start point) and 3 for 'E'(End point)
+    """since maze contains 0s and 1s we assign 2 for 'S'(Start point) and 3 for 'E'(End point)"""
     maze[start_x][start_y] = 2
     maze[end_x][end_y] = 3
 
@@ -168,13 +168,13 @@ def is_oposite_direction(moves):
         bool: True if step is opposite, otherwise False
 
     """
-    #array for defining opposite directions
+    """array for defining opposite directions"""
     not_allowed_moves = [("U","D"),("D","U"),("L","R"),("R","L")]
 
-    #checking if current step and new step are opposite, so if it returns to the same place
+    """checking if current step and new step are opposite, so if it returns to the same place"""
     for i in range(len(moves) - 1):
         val = (moves[i], moves[i+1])
-        #check if it returned to the same place
+        """check if it returned to the same place"""
         if val in not_allowed_moves:
             return True
         
@@ -212,15 +212,15 @@ def is_valid_move(maze_and_coords, moves, board_length):
         elif move == "D":
             start_x = start_x + 1
 
-    #check if new path coordinates are not exiting board boundaries
+    """check if new path coordinates are not exiting board boundaries"""
     if is_valid_coords([start_x, start_y], board_length)==False:
         return False
     
-    #check if current coordinates place is not wall
+    """check if current coordinates place is not wall"""
     if maze[start_x][start_y] == 1:
         return False
     
-    #prevents from returnining to the same place
+    """prevents from returnining to the same place"""
     if is_oposite_direction(moves):
         return False
 
@@ -244,7 +244,8 @@ def is_endpoint(maze_and_coords, moves):
     start_y = coords[0][1]
 
     end = (coords[1][0],coords[1][1])
-    #we are iterating through all the directions and changing start location based on current direction
+
+    """we are iterating through all the directions and changing start location based on current direction"""
     for move in moves:
         if move == "L":
             start_y = start_y - 1
@@ -255,7 +256,7 @@ def is_endpoint(maze_and_coords, moves):
         elif move == "D":
             start_x = start_x + 1
 
-    #checks if we have reached to the end point
+    """checks if we have reached to the end point"""
     if ((start_x, start_y)) == end:
         return True
     
@@ -276,21 +277,21 @@ def find_shortest_path(maze_and_coords, board_length):
 
     """
 
-    #declaring queue for adding moves 
+    """declaring queue for adding moves """
     q_moves = queue.Queue()
     q_moves.put("")
     prev_dir = ""
 
     while not is_endpoint(maze_and_coords, prev_dir):
-        #getting first element(direction) in queue
+        """getting first element(direction) in queue"""
         prev_dir = q_moves.get()
 
-        #iterating through all possible directions
+        """iterating through all possible directions"""
         for dir in ["L", "R", "U", "D"]:
-            #adding new direction to the previous directions
+            """adding new direction to the previous directions"""
             current_dir = prev_dir + dir
             
-            #before adding to the queue, check if move is valid
+            """before adding to the queue, check if move is valid"""
             if is_valid_move(maze_and_coords, current_dir, board_length):
                 q_moves.put(current_dir)
 
@@ -352,7 +353,7 @@ def print_maze(maze_and_coords, path):
 
 
 def main():
-    #making sure user input is in valid range and size is odd number 
+    """making sure user input is in valid range and size is odd number """
     while True:
         board_length = int(input("Enter odd number for the size of the grid: "))
         try:
