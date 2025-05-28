@@ -23,7 +23,7 @@ def is_valid_coords(current_coords, board_length):
         board_length (int): board length
 
     Returns:
-        bool: False if coordinates are out of range, otherwise False
+        bool: False if coordinates are out of range, otherwise True
     """
     if ((current_coords[0] <= 0) or (current_coords[0] >= board_length) 
         or (current_coords[1] <= 0) or (current_coords[1] >= board_length)):
