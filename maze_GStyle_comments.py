@@ -40,7 +40,7 @@ def generate_maze(board_length):
         board_length (int): board length
 
     Return:
-        (maze, coord) (tuple): tuple of maze, which is 2D list and list of coordinates of Start and End points
+        (maze, coord) (tuple): tuple of maze (2D list) and list of coordinates of Start and End points
     """
 
     """
